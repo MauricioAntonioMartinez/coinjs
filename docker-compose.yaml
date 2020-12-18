@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+  node01:
+    build: ./node
+    volumes:
+      - ./node/src:/app/src
+    env_file:
+      - ./env/.node01.env
+    depends_on:
+      - nats
+
+  node02:
+    build: ./node
+    volumes:
+      - ./node/src:/app/src
+    env_file:
+      - ./env/.node02.env
+    depends_on:
+      - nats
+
+  mongo01:
+    image: mongo
+    env_file:
+      - ./env/.database.env
+    volumes:
+      - mongo-node01:/data/db
+
+  mongo02:
+    image: mongo
+    env_file:
+      - ./env/.database.env
+    volumes:
+      - mongo-node02:/data/db
+
+  nats:
+    image: nats-streaming
+    command:
+      - "-p"
+      - "4222"
+      - "-m"
+      - "8222"
+      - "-hbi"
+      - "5s"
+      - "-hbt"
+      - "5s"
+      - "-hbf"
+      - "2"
+      - "-SD"
+      - "-cid"
+      - "blockchain"
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  client:
+    build: ./client
+    volumes:
+      - ./client:/app
+    tty: true
+    stdin_open: true
+    ports:
+      - "3000:3000"
+
+  web:
+    build: ./nginx
+    ports:
+      - "9000:80"
+    depends_on:
+      - node01
+      - node02
+
+volumes:
+  mongo-node01:
+  mongo-node02:

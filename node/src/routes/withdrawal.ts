@@ -18,6 +18,7 @@ withDrawalRouter.patch(
   async (req: Request, res: Response) => {
     const user = req.user;
     const amount = req.body.amount;
+
     if (+user.balance - amount < 0) throw new Error("Insufficient founds.");
 
     const userUpdated = await user

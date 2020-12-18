@@ -17,20 +17,32 @@ interface UserModel extends mongoose.Model<UserDocument> {
   build(attrs: UserAttrs): UserDocument;
 }
 
-const schema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
+const schema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    balance: {
+      type: Number,
+      default: 100, // you initiate your account with 100 box, to be available to transfer
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  balance: {
-    type: Number,
-    default: 100, // you initiate your account with 100 box, to be available to transfer
-  },
-});
+  {
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        delete ret.password;
+      },
+    },
+  }
+);
 
 schema.pre("save", async function (next) {
   const user = this;

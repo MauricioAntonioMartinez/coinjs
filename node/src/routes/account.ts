@@ -3,19 +3,21 @@ import { currentUser } from "../middleware/currentUser";
 import { requireAuth } from "../middleware/requireAuth";
 import { User } from "../model/User";
 
-export const accountStatusRouter = express.Router();
+export const accountRouter = express.Router();
 
-accountStatusRouter.get(
+accountRouter.get(
   "/balance",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {
-    const currentUser = await User.findOne({
-      username: req.user.username,
-    });
-    if (!currentUser) throw new Error("User not found.");
     return res.status(200).json({
-      balance: currentUser.balance,
+      balance: req.user.balance,
     });
   }
 );
+
+accountRouter.get("/user/:username", async (req: Request, res: Response) => {
+  const username = req.params.username;
+  const user = await User.findOne({ username });
+  res.status(200).json(user);
+});

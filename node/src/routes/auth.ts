@@ -1,17 +1,20 @@
 import express, { Request, Response } from "express";
+import axios from "axios";
 import jwt from "jsonwebtoken";
 import { body } from "express-validator";
 import { validateRequest } from "../middleware/validateRequest";
 import { User } from "../model/User";
 import { CreateAccountPublisher } from "../publishers/create-account-publisher";
 import { natsSingleton } from "../nats-singleton";
-import { NODE_NAME } from "../constants";
+import { BROTHER_NODES, NODE_NAME } from "../constants";
+import { checkBalance } from "../common/checkBalance";
+import { validateUser } from "../common/validateBalance";
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
-export const accountRouter = express.Router();
+export const authRouter = express.Router();
 
-accountRouter.post(
+authRouter.post(
   "/signup",
   [
     body("username").trim().isLength({ min: 5, max: 15 }),
@@ -46,7 +49,7 @@ accountRouter.post(
   }
 );
 
-accountRouter.post(
+authRouter.post(
   "/login",
   [
     body("username").trim().not().isEmpty(),
@@ -54,7 +57,7 @@ accountRouter.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const user = await User.findOne({
+    let user = await User.findOne({
       username: req.body.username,
     });
     if (!user) return res.status(400).json({ message: "User not found." });
@@ -65,11 +68,13 @@ accountRouter.post(
       return res.status(400).json({ message: "Invalid credentials." });
     }
 
+    user = await validateUser(user);
+
     const token = await jwt.sign({ username: user.username }, SECRET_KEY!, {
       expiresIn: "1h",
     });
 
-    res.cookie("token", token, { maxAge: 60 * 1000, httpOnly: true });
+    res.cookie("token", token, { maxAge: 60 * 10000, httpOnly: true });
 
     return res.status(200).json({
       success: true,

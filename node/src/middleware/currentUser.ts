@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { validateUser } from "../common/validateBalance";
 import { User, UserDocument } from "../model/User";
 
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -28,7 +29,7 @@ export const currentUser = async (
       username: userPayload.username,
     });
     if (!user) throw new Error("Username not found.");
-    req.user = user;
+    req.user = await validateUser(user);
   } catch (e) {}
 
   next();

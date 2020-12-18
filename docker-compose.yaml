@@ -19,6 +19,15 @@ services:
     depends_on:
       - nats
 
+  node03:
+    build: ./node
+    volumes:
+      - ./node:/app
+    env_file:
+      - ./env/.node03.env
+    depends_on:
+      - nats
+
   mongo01:
     image: mongo
     env_file:
@@ -32,6 +41,13 @@ services:
       - ./env/.database.env
     volumes:
       - mongo-node02:/data/db
+
+  mongo03:
+    image: mongo
+    env_file:
+      - ./env/.database.env
+    volumes:
+      - mongo-node03:/data/db
 
   nats:
     image: nats-streaming
@@ -65,11 +81,13 @@ services:
   web:
     build: ./nginx
     ports:
-      - "9000:80"
+      - "8080:80"
     depends_on:
       - node01
       - node02
+      - node03
 
 volumes:
   mongo-node01:
   mongo-node02:
+  mongo-node03:

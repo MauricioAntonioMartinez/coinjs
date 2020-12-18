@@ -2,8 +2,6 @@ import express from "express";
 import "express-async-errors";
 import mongoose from "mongoose";
 import { urlencoded } from "body-parser";
-import { accountStatusRouter } from "./routes/accountStatus";
-import { accountRouter } from "./routes/createAccount";
 import { depositRouter } from "./routes/deposit";
 import cookieParser from "cookie-parser";
 import { withDrawalRouter } from "./routes/withdrawal";
@@ -14,6 +12,8 @@ import { MineListener } from "./listeners/mine-listener";
 import { DepositListener } from "./listeners/deposit-listener";
 import { mineRouter } from "./routes/mine";
 import { WithDrawalListener } from "./listeners/withdrawal-listner";
+import { authRouter } from "./routes/auth";
+import { accountRouter } from "./routes/account";
 
 class App {
   private port?: number;
@@ -46,8 +46,10 @@ class App {
     this.mongo_uri = process.env.MONGO_URI;
     this.natsUrl = process.env.NATS_URL;
     const SECRET_KEY = process.env.SECRET_KEY;
+    const BROTHER_NODES = process.env.BROTHER_NODES;
 
     if (
+      !BROTHER_NODES ||
       !SECRET_KEY ||
       !this.port ||
       !this.clusterId ||
@@ -70,10 +72,10 @@ class App {
     app.use(cookieParser());
     app.use(express.json());
 
+    app.use(authRouter);
     app.use(accountRouter);
     app.use(depositRouter);
     app.use(withDrawalRouter);
-    app.use(accountStatusRouter);
     app.use(mineRouter);
 
     app.get("*", (req, res) => {

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: node
+  name: node
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: node
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: node
+      name: node
+    spec:
+      containers:
+        - image: mcuve/node-blockchain
+          name: node-blockchain
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MONGO_URI
+              value: "mongodb://localhost:27017/node"
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: SECRET_KEY
+              value: blockchain-secret
+            - name: CLUSTER_ID
+              value: blockchain
+        - image: mongo
+          name: mongo-node
+          resources: {}
+status: {}

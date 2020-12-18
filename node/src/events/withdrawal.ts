@@ -3,7 +3,8 @@ import { Subjects } from "./subjects";
 export interface WithDrawalEvent {
   subject: Subjects.WithDrawal;
   data: {
-    userId: string;
+    publisher: string;
+    user: string;
     amount: number;
   };
 }

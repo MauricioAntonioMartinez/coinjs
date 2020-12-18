@@ -5,8 +5,8 @@ import { User } from "../model/User";
 
 export const accountStatusRouter = express.Router();
 
-accountStatusRouter.post(
-  "/status",
+accountStatusRouter.get(
+  "/balance",
   currentUser,
   requireAuth,
   async (req: Request, res: Response) => {

@@ -5,13 +5,14 @@ import { validateRequest } from "../middleware/validateRequest";
 import { User } from "../model/User";
 import { CreateAccountPublisher } from "../publishers/create-account-publisher";
 import { natsSingleton } from "../nats-singleton";
+import { NODE_NAME } from "../constants";
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
 export const accountRouter = express.Router();
 
 accountRouter.post(
-  "/create-account",
+  "/signup",
   [
     body("username").trim().isLength({ min: 5, max: 15 }),
     body("password").trim().isLength({ min: 8 }),
@@ -30,7 +31,8 @@ accountRouter.post(
 
     await new CreateAccountPublisher(natsSingleton.client).publish({
       password: req.body.password,
-      username: newUser.username,
+      username: req.body.username,
+      publisher: NODE_NAME!,
     });
 
     const token = await jwt.sign({ username: newUser.username }, SECRET_KEY!, {
@@ -66,6 +68,7 @@ accountRouter.post(
     const token = await jwt.sign({ username: user.username }, SECRET_KEY!, {
       expiresIn: "1h",
     });
+
     res.cookie("token", token, { maxAge: 60 * 1000, httpOnly: true });
 
     return res.status(200).json({

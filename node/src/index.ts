@@ -13,6 +13,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { MineListener } from "./listeners/mine-listener";
 import { DepositListener } from "./listeners/deposit-listener";
 import { mineRouter } from "./routes/mine";
+import { WithDrawalListener } from "./listeners/withdrawal-listner";
 
 class App {
   private port?: number;
@@ -90,6 +91,7 @@ class App {
     new CreateAccountListener(natsSingleton.client).listen();
     new MineListener(natsSingleton.client).listen();
     new DepositListener(natsSingleton.client).listen();
+    new WithDrawalListener(natsSingleton.client).listen();
   }
 }
 

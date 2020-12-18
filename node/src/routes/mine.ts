@@ -1,36 +1,35 @@
 import { Router, Request, Response } from "express";
-import { body } from "express-validator";
+import { MINE_EXCHANGE, NODE_NAME } from "../constants";
 import { currentUser } from "../middleware/currentUser";
 import { requireAuth } from "../middleware/requireAuth";
-import { validateRequest } from "../middleware/validateRequest";
 import { natsSingleton } from "../nats-singleton";
 import { MinePublisher } from "../publishers/mine-publisher";
 
 export const mineRouter = Router();
 
-mineRouter.post(
+mineRouter.patch(
   "/mine",
   currentUser,
   requireAuth,
-  [body("amount").isFloat({ min: 1 })],
-  validateRequest,
   async (req: Request, res: Response) => {
     const currentUser = req.user;
 
-    await currentUser
+    const userUpdated = await currentUser
       .set({
-        balance: currentUser.balance + req.body.amount,
+        balance: currentUser.balance + MINE_EXCHANGE,
       })
       .save();
 
     await new MinePublisher(natsSingleton.client).publish({
       amount: req.body.amount,
       username: currentUser.username,
+      publisher: NODE_NAME,
     });
 
     res.status(200).json({
       success: true,
       message: "Mined successfully",
+      balance: userUpdated.balance,
     });
   }
 );

@@ -4,7 +4,7 @@ services:
   node01:
     build: ./node
     volumes:
-      - ./node/src:/app/src
+      - ./node:/app
     env_file:
       - ./env/.node01.env
     depends_on:
@@ -13,7 +13,7 @@ services:
   node02:
     build: ./node
     volumes:
-      - ./node/src:/app/src
+      - ./node:/app
     env_file:
       - ./env/.node02.env
     depends_on:

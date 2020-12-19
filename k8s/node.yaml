@@ -34,7 +34,27 @@ spec:
               value: blockchain-secret
             - name: CLUSTER_ID
               value: blockchain
+            - name: BROTHER_NODES
+              value: node01 node02 node03
         - image: mongo
           name: mongo-node
           resources: {}
 status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: node-srv
+  name: node-srv
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 6000
+      nodePort: 30300
+  selector:
+    app: node
+  type: NodePort

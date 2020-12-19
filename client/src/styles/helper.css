@@ -1,0 +1,45 @@
+.message {
+  position: absolute;
+  padding: 0.5rem;
+  opacity: 0;
+  top: 2rem;
+  right: 2rem;
+  transition: all 200ms linear;
+}
+
+.translate {
+  transition: all 200ms linear;
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.success {
+  color: green;
+  background-color: #ffffff;
+  opacity: 1;
+  transition: all 0.7s ease-out;
+}
+
+.error {
+  color: red;
+  background-color: rgb(255, 255, 255);
+  opacity: 1;
+  transition: all 0.7s ease-out;
+}
+
+.top-right {
+  top: 2rem;
+  right: 2rem;
+}
+.top-left {
+  top: 2rem;
+  left: 2rem;
+}
+.bottom-right {
+  bottom: 2rem;
+  right: 2rem;
+}
+.bottom-left {
+  bottom: 2rem;
+  left: 2rem;
+}

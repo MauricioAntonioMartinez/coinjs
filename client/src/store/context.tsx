@@ -1,30 +1,45 @@
-import { createContext, PropsWithChildren, useReducer } from "react";
+import { createContext, Dispatch, PropsWithChildren, useReducer } from "react";
 
-interface Store {
+interface State {
   currentPage: string;
 }
 
-const Context = createContext<Store>({ currentPage: "/" });
+interface Store {
+  dispatcher: Dispatch<Action>;
+  state: State;
+}
 
-function reducer(state: any, action: any) {
-  switch (action) {
-    case "increment":
-      return {};
-    case "decrement":
-      return {};
+interface Action {
+  type: string;
+  payload: any;
+}
+
+export const MainContext = createContext<Store>({
+  state: { currentPage: "" },
+  dispatcher: () => {},
+});
+
+function reducer(state: State, action: Action) {
+  switch (action.type) {
+    case "changeCurrentPage":
+      return {
+        ...state,
+        currentPage: action.payload.currentPage,
+      };
     default:
-      return {};
+      return state;
   }
 }
-const intialState = {
-  products: [],
-  shoppingCart: 0,
+const initialState = {
+  currentPage: "/",
 };
 
-const Provider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const [state, dispatcher] = useReducer(reducer, intialState);
+export const Provider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
+  const [state, dispatcher] = useReducer(reducer, initialState);
 
   return (
-    <Context.Provider value={{ currentPage: "/" }}>{children}</Context.Provider>
+    <MainContext.Provider value={{ state, dispatcher }}>
+      {children}
+    </MainContext.Provider>
   );
 };

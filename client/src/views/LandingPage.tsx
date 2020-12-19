@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { MainContext } from "../store/context";
 import "../styles/button.css";
 
 interface Props {}
 
 export const LandingPage = (props: Props) => {
+  const { dispatcher } = useContext(MainContext);
   return (
     <div className="lading-page-container">
       <blockquote className="quotation">
@@ -13,7 +15,17 @@ export const LandingPage = (props: Props) => {
         Prize nominee
       </blockquote>
       <div className="button-container">
-        <button className="btn outline">
+        <button
+          className="btn outline"
+          onClick={() => {
+            dispatcher({
+              type: "changeCurrentPage",
+              payload: {
+                currentPage: "/login",
+              },
+            });
+          }}
+        >
           <Link to="/login">Login</Link>
         </button>
         <button className="btn fill">

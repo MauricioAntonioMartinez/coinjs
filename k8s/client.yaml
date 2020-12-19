@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: client
+  name: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: client
+    spec:
+      containers:
+        - image: mcuve/client-blockchain
+          name: client-blockchain
+          resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: client
+  name: client-srv
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+      nodePort: 30400
+
+  selector:
+    app: client
+  type: NodePort
+status:
+  loadBalancer: {}

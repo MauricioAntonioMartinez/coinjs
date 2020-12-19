@@ -1,0 +1,47 @@
+.btn {
+  padding: 0.2rem 0.5rem;
+  border: none;
+  margin: 0.5rem;
+  font-size: 1.5rem;
+  transition: all 300ms ease-out;
+  outline-style: none;
+}
+
+.lading-page-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn > a {
+  text-decoration: none;
+}
+
+.outline {
+  border: 1px solid #e66465;
+  background: transparent;
+  color: #e66465;
+}
+
+.outline:hover,
+.fill:hover {
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+}
+
+.fill {
+  background: #e66465;
+  color: white;
+}
+
+.quotation {
+  color: #ccc;
+  font-style: italic;
+}
+
+.button-container {
+  margin: auto;
+}

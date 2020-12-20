@@ -22,22 +22,13 @@ export const checkBalance = async (user: UserDocument) => {
       const nodeUser = await axios.get(
         `http://${node}:6000/user/${user.username}`
       );
-      const balance = nodeUser.data.balance;
+      const balance = nodeUser.data?.balance;
       nodeBalances[balance] = (nodeBalances[balance] || 0) + 1;
     } catch (e) {
       console.log(e.message);
     }
   }
 
-  const sortedBalances = Object.entries(nodeBalances).sort(
-    (prev, next) => prev[1] - next[1]
-  );
-
-  const appearance = +sortedBalances[0][1];
-  const balance = +sortedBalances[0][0];
-  console.log(
-    `PERCENTAGE OF VALIDATION ${((appearance / TOTAL_NODES) * 100).toFixed(2)}%`
-  );
-
-  return { validBalance: balance === +user.balance, consensusBalance: balance };
+  if (Object.entries(nodeBalances).length > 1)
+    throw new Error("Waiting for sync");
 };

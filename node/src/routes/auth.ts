@@ -1,14 +1,12 @@
 import express, { Request, Response } from "express";
-import axios from "axios";
 import jwt from "jsonwebtoken";
 import { body } from "express-validator";
 import { validateRequest } from "../middleware/validateRequest";
 import { User } from "../model/User";
 import { CreateAccountPublisher } from "../publishers/create-account-publisher";
 import { natsSingleton } from "../nats-singleton";
-import { BROTHER_NODES, NODE_NAME } from "../constants";
+import { NODE_NAME } from "../constants";
 import { checkBalance } from "../common/checkBalance";
-import { validateUser } from "../common/validateBalance";
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -58,7 +56,7 @@ authRouter.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    let user = await User.findOne({
+    const user = await User.findOne({
       username: req.body.username,
     });
     if (!user) return res.status(400).json({ message: "User not found." });
@@ -69,7 +67,7 @@ authRouter.post(
       return res.status(400).json({ message: "Invalid credentials." });
     }
 
-    user = await validateUser(user);
+    await checkBalance(user);
 
     const token = await jwt.sign({ username: user.username }, SECRET_KEY!, {
       expiresIn: "1h",

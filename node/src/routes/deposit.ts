@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { checkBalance } from "../common/checkBalance";
 import { makeTransaction } from "../common/makeTransaction";
-import { validateUser } from "../common/validateBalance";
 import { NODE_NAME } from "../constants";
 import { currentUser } from "../middleware/currentUser";
 import { requireAuth } from "../middleware/requireAuth";

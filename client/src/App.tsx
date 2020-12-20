@@ -1,19 +1,23 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { BackButton } from "./components/BackButton";
+import { useStore } from "./store/context";
 import { Home } from "./views/Home";
 import { LandingPage } from "./views/LandingPage";
 import { Login } from "./views/Login";
 import { SignUp } from "./views/SignUp";
 
 const App = () => {
+  const { state } = useStore();
   return (
     <div className="App">
       <div className="main">
         <BackButton />
-        <div className="header">
-          <h1>Welcome to Coinjs by mcuve.</h1>
-        </div>
+        {!state.authenticated && (
+          <div className="header">
+            <h1>Welcome to Coinjs by mcuve.</h1>
+          </div>
+        )}
         <main className="content">
           <Switch>
             <Route path="/" exact component={LandingPage} />

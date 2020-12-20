@@ -31,6 +31,7 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 100, // you initiate your account with 100 box, to be available to transfer
     },
+    transactions: [{}],
   },
   {
     toJSON: {

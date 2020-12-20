@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import "../styles/form.css";
 import "../styles/button.css";
 
 import { message } from "../helpers/message";
 import { useHistory } from "react-router";
+import { useStore } from "../store/context";
+import { Actions, CHANGE_BALANCE } from "../store/actions";
 
 interface Props {
   sendTo: string;
@@ -12,13 +14,21 @@ interface Props {
 
 export const Form = ({ sendTo }: Props) => {
   const router = useHistory();
+  const { dispatcher } = useStore();
   const [inputs, setInputs] = useState({ username: "", password: "" });
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await axios.post(`http://localhost:8080/${sendTo}`, inputs);
       message.success(res.data.message);
-      router.push("/home");
+
+      dispatcher<CHANGE_BALANCE>({
+        type: Actions.CHANGE_BALANCE,
+        payload: {
+          balance: res.data.balance,
+        },
+      });
+      router.replace("/home");
     } catch (e) {
       message.error(e.response?.data?.message);
     }

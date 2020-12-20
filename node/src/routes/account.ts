@@ -21,3 +21,8 @@ accountRouter.get("/user/:username", async (req: Request, res: Response) => {
   const user = await User.findOne({ username });
   res.status(200).json(user);
 });
+
+accountRouter.get("/users", async (req, res) => {
+  const users = await User.find({});
+  return res.status(200).json(users);
+});

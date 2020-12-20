@@ -1,0 +1,24 @@
+.grid-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 2em 0px;
+  grid-template-areas:
+    "logout balance balance ."
+    "transactions transactions transactions users"
+    "transactions transactions transactions users";
+}
+.transactions {
+  grid-area: transactions;
+}
+.users {
+  grid-area: users;
+}
+.logout {
+  grid-area: logout;
+}
+.balance {
+  grid-area: balance;
+}

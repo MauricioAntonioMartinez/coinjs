@@ -80,6 +80,7 @@ authRouter.post(
     return res.status(200).json({
       success: true,
       message: "Logged In",
+      balance: +user.balance,
     });
   }
 );

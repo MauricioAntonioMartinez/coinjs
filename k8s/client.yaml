@@ -20,6 +20,8 @@ spec:
       containers:
         - image: mcuve/client-blockchain
           name: client-blockchain
+          stdin: true
+          tty: true
           resources: {}
 status: {}
 

@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import { checkBalance } from "../common/checkBalance";
 import { makeTransaction } from "../common/makeTransaction";
 import { NODE_NAME } from "../constants";
 import { currentUser } from "../middleware/currentUser";
@@ -25,6 +24,7 @@ depositRouter.post(
     const amount = req.body.amount;
     const recipientName = req.body.recipient;
     const sender = req.user;
+
     const recipient = await User.findOne({
       username: recipientName,
     });

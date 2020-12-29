@@ -25,7 +25,7 @@ spec:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
-                  fieldPath: spec.nodeName
+                  fieldPath: metadata.name
             - name: MONGO_URI
               value: "mongodb://localhost:27017/node"
             - name: NATS_URL
@@ -36,6 +36,8 @@ spec:
               value: blockchain
             - name: BROTHER_NODES
               value: node01 node02 node03
+            - name: PORT
+              value: "6000"
         - image: mongo
           name: mongo-node
           resources: {}
@@ -57,4 +59,4 @@ spec:
       nodePort: 30300
   selector:
     app: node
-  type: NodePort
+  type: LoadBalancer

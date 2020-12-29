@@ -63,11 +63,17 @@ services:
       - "-hbf"
       - "2"
       - "-SD"
+      - "-st"
+      - "file"
+      - "--dir"
+      - "/store"
       - "-cid"
       - "blockchain"
     ports:
       - "4222:4222"
       - "8222:8222"
+    volumes:
+      - "./store:/store"
 
   client:
     build: ./client

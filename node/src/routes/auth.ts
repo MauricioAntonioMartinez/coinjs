@@ -1,16 +1,22 @@
 import express, { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { body } from "express-validator";
+import jwt from "jsonwebtoken";
+import { checkBalance } from "../common/checkBalance";
+import { NODE_NAME } from "../constants";
 import { validateRequest } from "../middleware/validateRequest";
 import { User } from "../model/User";
-import { CreateAccountPublisher } from "../publishers/create-account-publisher";
 import { natsSingleton } from "../nats-singleton";
-import { NODE_NAME } from "../constants";
-import { checkBalance } from "../common/checkBalance";
+import { CreateAccountPublisher } from "../publishers/create-account-publisher";
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
 export const authRouter = express.Router();
+
+declare namespace Express {
+  interface Request {
+    token: string;
+  }
+}
 
 authRouter.post(
   "/signup",
@@ -73,7 +79,12 @@ authRouter.post(
       expiresIn: "1h",
     });
 
-    res.cookie("token", token, { maxAge: 60 * 10000, httpOnly: true });
+    res.cookie("token", token, {
+      maxAge: 60 * 10000,
+      httpOnly: true,
+      secure: false,
+      path: "/",
+    });
 
     return res.status(200).json({
       success: true,

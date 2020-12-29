@@ -1,20 +1,20 @@
+import { urlencoded } from "body-parser";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 import "express-async-errors";
 import mongoose from "mongoose";
-import cors from "cors";
-import { urlencoded } from "body-parser";
-import { depositRouter } from "./routes/deposit";
-import cookieParser from "cookie-parser";
-import { withDrawalRouter } from "./routes/withdrawal";
-import { natsSingleton } from "./nats-singleton";
 import { CreateAccountListener } from "./listeners/create-account-listener";
-import { errorHandler } from "./middleware/errorHandler";
-import { MineListener } from "./listeners/mine-listener";
 import { DepositListener } from "./listeners/deposit-listener";
-import { mineRouter } from "./routes/mine";
+import { MineListener } from "./listeners/mine-listener";
 import { WithDrawalListener } from "./listeners/withdrawal-listner";
-import { authRouter } from "./routes/auth";
+import { errorHandler } from "./middleware/errorHandler";
+import { natsSingleton } from "./nats-singleton";
 import { accountRouter } from "./routes/account";
+import { authRouter } from "./routes/auth";
+import { depositRouter } from "./routes/deposit";
+import { mineRouter } from "./routes/mine";
+import { withDrawalRouter } from "./routes/withdrawal";
 
 class App {
   private port?: number;
@@ -65,12 +65,20 @@ class App {
   start() {
     const app = express();
 
-    app.use((req, res, next) => {
-      res.append("Access-Control-Allow-Origin", ["*"]);
-      res.append("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-      res.append("Access-Control-Allow-Headers", "Content-Type");
-      next();
-    });
+    app.use(
+      cors({ origin: "http://localhost:3000", credentials: true }) as any
+    );
+
+    // app.set("trust proxy", 1);
+
+    // app.use(
+    //   cookieSession({
+    //     signed: false,
+    //     secure: false,
+    //     sameSite: "lax",
+    //     httpOnly: true,
+    //   })
+    // );
 
     app.use(
       urlencoded({

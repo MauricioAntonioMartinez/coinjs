@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { message } from "../helpers/message";
-import { Actions, CHANGE_BALANCE } from "../store/actions";
+import { Actions, AUTHENTICATED } from "../store/actions";
 import { useStore } from "../store/context";
 import "../styles/button.css";
 import "../styles/form.css";
@@ -29,10 +29,11 @@ export const Form = ({ sendTo }: Props) => {
       );
       message.success(res.data.message);
 
-      dispatcher<CHANGE_BALANCE>({
-        type: Actions.CHANGE_BALANCE,
+      dispatcher<AUTHENTICATED>({
+        type: Actions.AUTHENTICATED,
         payload: {
           balance: res.data.balance,
+          username: inputs.username,
         },
       });
       router.replace("/home");

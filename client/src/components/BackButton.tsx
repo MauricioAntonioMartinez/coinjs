@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import backIcon from "../assets/back.svg";
-import { Actions, LOGOUT } from "../store/actions";
 import { useStore } from "../store/context";
 import "../styles/button.css";
 
@@ -14,19 +13,18 @@ export const BackButton = () => {
     setPathName(listener.pathname);
     setShowButton(listener.pathname !== "/");
   });
-
-  // if (!state.authenticated && ['/login','/signup','/'].) return <Redirect to="/" />;
+  if (state.authenticated) return null;
 
   return showButton ? (
     <>
-      {pathName !== "/home" && state.authenticated && (
-        <img
-          src={backIcon}
-          onClick={() => {
-            history.goBack();
-          }}
-          className="back-button"
-        />
+      <img
+        src={backIcon}
+        onClick={() => {
+          history.goBack();
+        }}
+        className="back-button"
+      />
+      {/* {pathName !== "/home" && state.authenticated && (
       )}
       {state.authenticated && (
         <div
@@ -38,7 +36,7 @@ export const BackButton = () => {
         >
           Log Out
         </div>
-      )}
+      )} */}
     </>
   ) : null;
 };

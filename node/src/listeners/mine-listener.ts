@@ -1,10 +1,10 @@
 import { Message } from "node-nats-streaming";
-import { makeTransaction } from "../common/makeTransaction";
 import { MINE_EXCHANGE, NODE_NAME } from "../constants";
 import { MineEvent } from "../events/mine";
 import { Subjects } from "../events/subjects";
 import { Listener } from "../model/Listener";
 import { User } from "../model/User";
+import { makeTransaction } from "../util/makeTransaction";
 
 export class MineListener extends Listener<MineEvent> {
   readonly subject = Subjects.Mine;

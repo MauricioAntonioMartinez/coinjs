@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Request, Response, Router } from "express";
 import { MINE_EXCHANGE, NODE_NAME } from "../constants";
 import { currentUser } from "../middleware/currentUser";
 import { requireAuth } from "../middleware/requireAuth";
@@ -28,7 +28,7 @@ mineRouter.patch(
 
     res.status(200).json({
       success: true,
-      message: "Mined successfully",
+      message: `Mined successfully by: ${NODE_NAME}`,
       balance: userUpdated.balance,
     });
   }

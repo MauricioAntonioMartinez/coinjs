@@ -1,16 +1,16 @@
 import {
   createContext,
-  Dispatch,
   PropsWithChildren,
   useContext,
   useReducer,
 } from "react";
-import { Action, Actions, CHANGE_BALANCE } from "./actions";
+import { Action, Actions } from "./actions";
 import { State, Store } from "./types";
 
 const initialState = {
   balance: 0.0,
   authenticated: false,
+  username: "",
 };
 
 export const MainContext = createContext<Store>({
@@ -20,13 +20,18 @@ export const MainContext = createContext<Store>({
 
 function reducer<T extends Action>(state: State, action: T) {
   switch (action.type) {
+    case Actions.AUTHENTICATED:
+      return {
+        balance: action.payload.balance,
+        authenticated: true,
+        username: action.payload.username,
+      };
+
     case Actions.CHANGE_BALANCE:
       return {
         ...state,
         balance: action.payload.balance,
-        authenticated: true,
       };
-
     case Actions.LOGOUT:
       return {
         ...state,

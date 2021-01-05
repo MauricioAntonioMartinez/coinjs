@@ -1,5 +1,6 @@
 export enum Actions {
   CHANGE_BALANCE,
+  AUTHENTICATED,
   LOGOUT,
 }
 
@@ -11,6 +12,14 @@ export interface Action {
 export interface LOGOUT {
   type: Actions.LOGOUT;
   payload: null;
+}
+
+export interface AUTHENTICATED {
+  type: Actions.AUTHENTICATED;
+  payload: {
+    balance: number;
+    username: string;
+  };
 }
 
 export interface CHANGE_BALANCE {

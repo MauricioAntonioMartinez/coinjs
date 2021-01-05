@@ -1,9 +1,9 @@
-import { Dispatch } from "react";
 import { Action } from "./actions";
 
 export interface State {
   balance: number;
   authenticated: boolean;
+  username: string;
 }
 
 export interface Store {

@@ -1,9 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { AddTransaction } from "../components/AddTransaction";
 import { Modal } from "../components/Modal";
+import { message } from "../helpers/message";
+import { Actions, CHANGE_BALANCE, LOGOUT } from "../store/actions";
 import { useStore } from "../store/context";
+import "../styles/header.css";
 import "../styles/home.css";
 interface Props {}
 
@@ -12,12 +15,38 @@ export const Home = (props: Props) => {
   const [users, setUsers] = useState<{ username: string; balance: number }[]>(
     []
   );
-  const [showModal, setShowModal] = useState(true);
+  const [modalState, setModalState] = useState({
+    open: false,
+    isDeposit: false,
+  });
 
   const fetchUsersHandler = async () => {
     const res = await axios.get("http://localhost:8080/users");
     console.log(res.data);
     setUsers(res.data);
+  };
+  const { dispatcher } = useStore();
+  const history = useHistory();
+  const logoutHandler = () => {
+    dispatcher<LOGOUT>({ type: Actions.LOGOUT, payload: null });
+    history.push("/");
+  };
+
+  const mineHandler = async () => {
+    try {
+      const res = await axios.patch(
+        "http://localhost:8080/mine",
+        {},
+        { withCredentials: true }
+      );
+      message.success(res.data.message);
+      dispatcher<CHANGE_BALANCE>({
+        type: Actions.CHANGE_BALANCE,
+        payload: { balance: res.data.balance },
+      });
+    } catch (e) {
+      message.error(e?.data?.message);
+    }
   };
 
   useEffect(() => {
@@ -28,19 +57,54 @@ export const Home = (props: Props) => {
 
   return (
     <>
+      <Modal
+        open={modalState.open}
+        closeModal={() =>
+          setModalState((prev) => ({ isDeposit: true, open: !prev.open }))
+        }
+      >
+        <AddTransaction
+          isDeposit={modalState.isDeposit}
+          success={() => {
+            setModalState((prev) => ({ isDeposit: true, open: !prev.open }));
+            fetchUsersHandler();
+          }}
+        />
+      </Modal>
+
       <div className="grid-container">
-        <Modal open={showModal} closeModal={() => setShowModal(!showModal)}>
-          <AddTransaction
-            success={() => {
-              setShowModal(!showModal);
-              fetchUsersHandler();
-            }}
-          />
-        </Modal>
-        <div className="transactions">
-          <h2>- Transactions -</h2>
+        <div className="actions">
+          <button
+            className="btn fill"
+            onClick={() =>
+              setModalState((prev) => ({ isDeposit: true, open: !prev.open }))
+            }
+          >
+            Deposit
+          </button>
+          <button
+            className="btn fill"
+            onClick={() =>
+              setModalState((prev) => ({ isDeposit: false, open: !prev.open }))
+            }
+          >
+            WithDrawal
+          </button>
+          <button className="btn outline" onClick={mineHandler}>
+            Mine
+          </button>
         </div>
-        <div className="users">
+        <div className="balance header">
+          <h1 style={{ fontSize: "2rem" }}>
+            Current Balance of {state.username}: ${state.balance}
+          </h1>
+        </div>
+        <div className="logout">
+          <button className="btn outline" onClick={logoutHandler}>
+            LogOut
+          </button>
+        </div>
+        <div className="transactions">
           <h2>- Users -</h2>
           <ul>
             {users.map((user, key) => {
@@ -52,11 +116,6 @@ export const Home = (props: Props) => {
             })}
           </ul>
         </div>
-        <div className="logout">
-          <button onClick={() => setShowModal(!showModal)}>Deposit</button>
-          <button>WithDrawal</button>
-        </div>
-        <div className="balance">Current Balance ${state.balance}</div>
       </div>
     </>
   );

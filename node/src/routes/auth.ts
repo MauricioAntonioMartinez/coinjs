@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import jwt from "jsonwebtoken";
-import { checkBalance } from "../common/checkBalance";
 import { NODE_NAME } from "../constants";
 import { validateRequest } from "../middleware/validateRequest";
 import { User } from "../model/User";
 import { natsSingleton } from "../nats-singleton";
 import { CreateAccountPublisher } from "../publishers/create-account-publisher";
+import { checkBalance } from "../util/checkBalance";
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -49,7 +49,8 @@ authRouter.post(
 
     return res.status(200).json({
       success: true,
-      message: "User created.",
+      message: `User created by  ${NODE_NAME}`,
+      balance: +newUser.balance,
     });
   }
 );
@@ -88,7 +89,7 @@ authRouter.post(
 
     return res.status(200).json({
       success: true,
-      message: "Logged In",
+      message: `Logged In with: ${NODE_NAME}`,
       balance: +user.balance,
     });
   }

@@ -5,9 +5,10 @@ import { Actions, CHANGE_BALANCE } from "../store/actions";
 import { useStore } from "../store/context";
 interface Props {
   success: () => void;
+  isDeposit?: boolean;
 }
 
-export const AddTransaction = ({ success }: Props) => {
+export const AddTransaction = ({ success, isDeposit }: Props) => {
   const [inputs, setInputs] = useState({ recipient: "", amount: 0 });
   const { dispatcher } = useStore();
   const makeTransactionHandler = async (
@@ -16,10 +17,15 @@ export const AddTransaction = ({ success }: Props) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:8080/deposit", inputs, {
-        withCredentials: true,
-      });
-      message.success("Transaction succeeded");
+      const res = await axios(
+        `http://localhost:8080/${isDeposit ? "deposit" : "withdrawal"}`,
+        {
+          method: isDeposit ? "POST" : "PATCH",
+          data: inputs,
+          withCredentials: true,
+        }
+      );
+      message.success(res.data.message);
       console.log(res.data);
       dispatcher<CHANGE_BALANCE>({
         type: Actions.CHANGE_BALANCE,
@@ -36,15 +42,17 @@ export const AddTransaction = ({ success }: Props) => {
 
   return (
     <form className="form" onSubmit={makeTransactionHandler}>
-      <input
-        type="text"
-        placeholder="recipient"
-        className="form-input"
-        value={inputs.recipient}
-        onChange={(inp) =>
-          setInputs((e) => ({ ...e, recipient: inp.target.value }))
-        }
-      />
+      {isDeposit && (
+        <input
+          type="text"
+          placeholder="recipient"
+          className="form-input"
+          value={inputs.recipient}
+          onChange={(inp) =>
+            setInputs((e) => ({ ...e, recipient: inp.target.value }))
+          }
+        />
+      )}
       <input
         type="number"
         placeholder="amount"
@@ -55,7 +63,7 @@ export const AddTransaction = ({ success }: Props) => {
         }
       />
       <button type="submit" className="btn fill">
-        Send
+        {isDeposit ? "Send" : "Withdrawal"}
       </button>
     </form>
   );

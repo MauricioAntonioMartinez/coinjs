@@ -1,13 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { MainContext } from "../store/context";
 import "../styles/button.css";
 
-interface Props {}
-
-export const LandingPage = (props: Props) => {
-  const { dispatcher } = useContext(MainContext);
-
+export const LandingPage = () => {
   return (
     <div className="lading-page-container">
       <blockquote className="quotation">

@@ -1,11 +1,10 @@
 import { Message } from "node-nats-streaming";
-import { makeTransaction } from "../common/makeTransaction";
 import { NODE_NAME } from "../constants";
 import { DepositEvent } from "../events/deposit";
-import { MineEvent } from "../events/mine";
 import { Subjects } from "../events/subjects";
 import { Listener } from "../model/Listener";
 import { User } from "../model/User";
+import { makeTransaction } from "../util/makeTransaction";
 
 export class DepositListener extends Listener<DepositEvent> {
   readonly subject = Subjects.Deposit;

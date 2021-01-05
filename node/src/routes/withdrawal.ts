@@ -35,6 +35,7 @@ withDrawalRouter.patch(
     return res.status(200).json({
       success: true,
       balance: userUpdated.balance,
+      message: `WithDrawal Succeeded by: ${NODE_NAME}`,
     });
   }
 );
